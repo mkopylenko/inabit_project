@@ -1,0 +1,101 @@
+[
+    {
+        "id": "16a48c25-30cf-4c02-a2c8-05f9f97c06f5",
+        "name": "Invisibility Cloak",
+        "description": "Become invisible with this magical cloak from the wizarding world.",
+        "price": 999.99,
+        "quantity": 10,
+        "sold": 3,
+        "pending_orders": 2,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "3c0a5c44-93d3-43eb-b883-3e3be812c142",
+        "name": "Lightsaber",
+        "description": "Elegant weapon from a more civilized age. Feel the Force!",
+        "price": 1499.99,
+        "quantity": 5,
+        "sold": 2,
+        "pending_orders": 1,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "2e3c5245-6015-456e-b55b-1876e3b2cf21",
+        "name": "Sonic Screwdriver",
+        "description": "The Doctor's trusty tool for opening doors and fixing gadgets.",
+        "price": 299.99,
+        "quantity": 20,
+        "sold": 7,
+        "pending_orders": 0,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "d0e7a9e8-f4a0-4f40-90b5-bbdc63c5f4e9",
+        "name": "TARDIS",
+        "description": "Time And Relative Dimension In Space. Bigger on the inside!",
+        "price": 999999.99,
+        "quantity": 1,
+        "sold": 1,
+        "pending_orders": 0,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "4bfdb4f8-6cbb-48f2-812b-39bde50c9244",
+        "name": "Hoverboard",
+        "description": "Experience the thrill of hovering above ground with this futuristic board.",
+        "price": 499.99,
+        "quantity": 3,
+        "sold": 0,
+        "pending_orders": 0,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "7cc33ac7-3f94-468a-b8b8-12d7c3f0841f",
+        "name": "Portal Gun",
+        "description": "Create inter-dimensional portals with this ingenious device from Aperture Science.",
+        "price": 1999.99,
+        "quantity": 2,
+        "sold": 1,
+        "pending_orders": 1,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "347f6e86-2300-4b10-b2f8-7b722f5569ad",
+        "name": "Tricorder",
+        "description": "Scan and analyze anything with this multifunctional device from Starfleet.",
+        "price": 799.99,
+        "quantity": 8,
+        "sold": 4,
+        "pending_orders": 2,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "05a84ef4-09f8-4b97-abe5-7b6002a9f4b3",
+        "name": "Batarang",
+        "description": "Batman's signature throwing weapon. Perfect for crime-fighting.",
+        "price": 149.99,
+        "quantity": 15,
+        "sold": 3,
+        "pending_orders": 1,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    },
+    {
+        "id": "80d54e43-794e-464d-842c-2e4fc58b365e",
+        "name": "Pokeball",
+        "description": "Capture and store Pokémon creatures with this iconic device.",
+        "price": 49.99,
+        "quantity": 30,
+        "sold": 10,
+        "pending_orders": 5,
+        "created_at": "2024-04-11T12:00:00Z",
+        "updated_at": "2024-04-11T12:00:00Z"
+    }
+]
