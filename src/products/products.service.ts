@@ -33,11 +33,7 @@ export class ProductsService {
       results = results.filter(product => product.description.includes(query.description));
     }
     if (query.sortBy) {
-      results.sort((a, b) => {
-        if (a[query.sortBy] < b[query.sortBy]) return -1;
-        if (a[query.sortBy] > b[query.sortBy]) return 1;
-        return 0;
-      });
+        ProductsUtils.sortBy(results, query.sortBy);
     }
 
     // Apply pagination
@@ -45,15 +41,18 @@ export class ProductsService {
 
     return results;
   }
-
-
+ 
 
   findLowStock(threshold: number): Product[] {
-    return this.products.filter(product => product.quantity <= threshold);
+    return this.products.filter(product => product.quantity <= threshold).sort((a, b) => a.quantity - b.quantity);
   }
 
-  findMostPopular(): Product[] {
-    return [...this.products].sort((a, b) => b.sold - a.sold);
+  findMostPopular(top?: number): Product[] {
+    let returnArray = [...this.products].sort((a, b) => b.sold - a.sold);
+    if (top){
+        returnArray= returnArray.slice(0,top);
+    }
+    return returnArray;
   }
 
   create(createProductDto: CreateProductDto): Product {

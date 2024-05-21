@@ -8,4 +8,12 @@ public static applyPagination(results: Product[], page?: string, limit?: string)
     }
     return results;
 }
+
+public static sortBy(results: Product[], sortBy: string) {
+    results.sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return -1;
+        if (a[sortBy] > b[sortBy]) return 1;
+        return 0;
+    });
+}
 }

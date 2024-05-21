@@ -19,8 +19,8 @@ export class ProductsController {
   }
 
   @Get('most-popular')
-  findMostPopular(): Product[] {
-    return this.productsService.findMostPopular();
+  findMostPopular(@Query('top') top: number): Product[] {
+    return this.productsService.findMostPopular(top);
   }
 
   @Post()
