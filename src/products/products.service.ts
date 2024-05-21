@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Product } from './interfaces/product-interface';
+import { ProductsUtils } from './products.utils';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -40,14 +41,12 @@ export class ProductsService {
     }
 
     // Apply pagination
-    if (query.page && query.limit) {
-      const page = parseInt(query.page, 10);
-      const limit = parseInt(query.limit, 10);
-      results = results.slice((page - 1) * limit, page * limit);
-    }
+    results = ProductsUtils.applyPagination(results,query.page, query.limit);
 
     return results;
   }
+
+
 
   findLowStock(threshold: number): Product[] {
     return this.products.filter(product => product.quantity <= threshold);
