@@ -8,4 +8,4 @@ import { CacheModule } from '@nestjs/cache-manager';
   controllers: [ProductsController],
   providers: [ProductsService]
 })
-export class ProductsModule {}
+export class ProductsModule { }
