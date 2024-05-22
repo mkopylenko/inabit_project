@@ -108,5 +108,38 @@
     "pending_orders": 0,
     "created_at": "2024-05-21T17:39:56.136Z",
     "updated_at": "2024-05-21T17:39:56.136Z"
+  },
+  {
+    "name": "Updated Product Name vasya1",
+    "description": "Updated description vasya",
+    "price": 120,
+    "quantity": 15,
+    "id": "87fbbd02-ef24-4e25-a9c1-e8b45cd3450a",
+    "sold": 0,
+    "pending_orders": 0,
+    "created_at": "2024-05-22T06:59:13.265Z",
+    "updated_at": "2024-05-22T07:08:47.979Z"
+  },
+  {
+    "name": "New Product111",
+    "description": "Description of the new product",
+    "price": 100,
+    "quantity": 20,
+    "id": "50287968-a5e6-4744-86a1-d6855532f03f",
+    "sold": 0,
+    "pending_orders": 0,
+    "created_at": "2024-05-22T07:09:06.106Z",
+    "updated_at": "2024-05-22T07:09:06.106Z"
+  },
+  {
+    "name": "New Product1111",
+    "description": "Description of the new product",
+    "price": 100,
+    "quantity": 20,
+    "id": "5ab32afa-80be-43a2-a122-20be71ca0b05",
+    "sold": 0,
+    "pending_orders": 0,
+    "created_at": "2024-05-22T07:11:13.577Z",
+    "updated_at": "2024-05-22T07:11:13.577Z"
   }
 ]

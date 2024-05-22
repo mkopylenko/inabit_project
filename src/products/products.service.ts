@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { Product } from './interfaces/product-interface';
 import { ProductsUtils } from './products.utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,21 +8,29 @@ import { UpdateProductDto } from './dto/update-product.dto';
 @Injectable()
 export class ProductsService {
   private products: Product[];
+  private readonly logger = new Logger(ProductsService.name);
 
   constructor() {
     this.loadProducts();
   }
 
   private loadProducts() {
-    const data = fs.readFileSync('products.json', 'utf-8');
-    this.products = JSON.parse(data);
+    try{
+        const data = fs.readFileSync('products.json', 'utf-8');
+        this.products = JSON.parse(data);
+        this.logger.log('Products loaded successfully');
+    } catch (error) {
+        this.logger.error('Failed to load products', error.stack);
+    }
   }
 
   private saveProducts() {
     fs.writeFileSync('products.json', JSON.stringify(this.products, null, 2));
   }
 
-  findAll(query): Product[] {
+  findAll(req): Product[] {
+    this.logger.log(`Request ID: ${req.requestId} - Fetching all products`);
+    const query = req.query;
     let results = this.products;
 
     // Apply filters and sorting
@@ -43,19 +51,28 @@ export class ProductsService {
   }
  
 
-  findLowStock(threshold: number): Product[] {
-    return this.products.filter(product => product.quantity <= threshold).sort((a, b) => a.quantity - b.quantity);
+  findLowStock(req): Product[] {
+    const query = req.query;
+    this.logger.log(`Request ID: ${req.requestId} - Fetching low stock products, threshold: ${query.threshold}`);
+    const results = this.products.filter(product => product.quantity <= query.threshold).sort((a, b) => a.quantity - b.quantity);
+     // Apply pagination
+    return ProductsUtils.applyPagination(results,query.page, query.limit);
   }
 
-  findMostPopular(top?: number): Product[] {
+  findMostPopular(req): Product[] {
+    const query = req.query;
+    this.logger.log(`Request ID: ${req.requestId} - Fetching top ${top} most popular products`);
     let returnArray = [...this.products].sort((a, b) => b.sold - a.sold);
-    if (top){
-        returnArray= returnArray.slice(0,top);
+    if (query.top){
+        returnArray= returnArray.slice(0,query.top);
     }
-    return returnArray;
+     // Apply pagination
+     return ProductsUtils.applyPagination(returnArray,query.page, query.limit);
   }
 
-  create(createProductDto: CreateProductDto): Product {
+  create(req): Product {
+    const createProductDto = req.body as CreateProductDto;
+    this.logger.log(`Request ID: ${req.requestId} - Creating a new product ${JSON.stringify(createProductDto)}`);
     if (this.products.some(product => product.name === createProductDto.name)) {
       throw new BadRequestException('Product name must be unique.');
     }
@@ -74,7 +91,10 @@ export class ProductsService {
     return newProduct;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto): Product {
+  update(req): Product {
+    const updateProductDto = req.body as UpdateProductDto;
+    const id = req.params.id;
+    this.logger.log(`Request ID: ${req.requestId} - Updating the product with id ${id}`);
     const productIndex = this.products.findIndex(product => product.id === id);
 
     if (productIndex === -1) {
@@ -96,9 +116,10 @@ export class ProductsService {
     return updatedProduct;
   }
 
-  delete(id: string): void {
+  delete(req): void {
+    const id = req.params.id;
+    this.logger.log(`Request ID: ${req.requestId} - Deleting the product with id ${id}`);
     const productIndex = this.products.findIndex(product => product.id === id);
-
     if (productIndex === -1) {
       throw new NotFoundException('Product not found.');
     }

@@ -1,4 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { isArray } from 'class-validator';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -13,7 +14,7 @@ export class RequestIdInterceptor implements NestInterceptor {
             map((data) => {
                 if (request.requestId) {
                     return {
-                        data: [...data],
+                        data: isArray(data) ? [...data]: data,
                         requestId: request.requestId,
                     };
                 }

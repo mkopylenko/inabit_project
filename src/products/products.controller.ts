@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query, Put, Req } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -9,33 +9,33 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query() query): Product[] {
-    return this.productsService.findAll(query);
+  findAll(@Req() req): Product[] {
+    return this.productsService.findAll(req);
   }
 
   @Get('low-stock')
-  findLowStock(@Query('threshold') threshold: number): Product[] {
-    return this.productsService.findLowStock(threshold);
+  findLowStock(@Req() req): Product[] {
+    return this.productsService.findLowStock(req);
   }
 
   @Get('most-popular')
-  findMostPopular(@Query('top') top: number): Product[] {
-    return this.productsService.findMostPopular(top);
+  findMostPopular(@Req() req): Product[] {
+    return this.productsService.findMostPopular(req);
   }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto): Product {
-    return this.productsService.create(createProductDto);
+  create(@Req() req): Product {
+    return this.productsService.create(req);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Product {
-    return this.productsService.update(id, updateProductDto);
+  update(@Req() req): Product {
+    return this.productsService.update(req);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): void {
-    this.productsService.delete(id);
+  delete(@Req() req): void {
+    this.productsService.delete(req);
   }
 }
 
