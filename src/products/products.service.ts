@@ -67,7 +67,7 @@ export class ProductsService {
 
     async findMostPopular(req): Promise<Product[]> {
         const query = req.query;
-        this.logger.log(`Request ID: ${req.requestId} - Fetching top ${top} most popular products`);
+        this.logger.log(`Request ID: ${req.requestId} - Fetching top ${query.top} most popular products`);
         const cacheKey = `products_pop_${JSON.stringify(query)}`;
         const cachedProducts = await this.tryGetFromCache(cacheKey, req);
         if (cachedProducts) {
