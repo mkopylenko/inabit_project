@@ -74,7 +74,9 @@ export class ProductsService {
     const createProductDto = req.body as CreateProductDto;
     this.logger.log(`Request ID: ${req.requestId} - Creating a new product ${JSON.stringify(createProductDto)}`);
     if (this.products.some(product => product.name === createProductDto.name)) {
-      throw new BadRequestException('Product name must be unique.');
+      const error = 'Product name must be unique.';
+      this.logError(req, error);
+      throw new BadRequestException(error);
     }
 
     const newProduct: Product = {
@@ -98,11 +100,15 @@ export class ProductsService {
     const productIndex = this.products.findIndex(product => product.id === id);
 
     if (productIndex === -1) {
-      throw new NotFoundException('Product not found.');
+      const error = 'Product not found.';
+      this.logError(req, error);
+      throw new NotFoundException(error);
     }
 
     if (updateProductDto.name && this.products.some((product, index) => product.name === updateProductDto.name && index !== productIndex)) {
-      throw new BadRequestException('Product name must be unique.');
+        const error = 'Product name must be unique.';
+        this.logError(req, error);
+        throw new BadRequestException(error);
     }
 
     const updatedProduct = {
@@ -121,14 +127,22 @@ export class ProductsService {
     this.logger.log(`Request ID: ${req.requestId} - Deleting the product with id ${id}`);
     const productIndex = this.products.findIndex(product => product.id === id);
     if (productIndex === -1) {
-      throw new NotFoundException('Product not found.');
+      const error = 'Product not found.';  
+      this.logError(req, error);
+      throw new NotFoundException(error);
     }
 
     if (this.products[productIndex].pending_orders > 0) {
-      throw new BadRequestException('Product with pending orders cannot be deleted.');
+      const error = 'Product with pending orders cannot be deleted.'; 
+      this.logError(req, error);
+      throw new BadRequestException(error);
     }
 
     this.products.splice(productIndex, 1);
     this.saveProducts();
+  }
+
+  private logError(req, error) {
+    this.logger.error(`Request ID: ${req.requestId} - ${error}`);
   }
 }
