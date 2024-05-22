@@ -9,17 +9,17 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Req() req): Product[] {
+  findAll(@Req() req): Promise<Product[]> {
     return this.productsService.findAll(req);
   }
 
   @Get('low-stock')
-  findLowStock(@Req() req): Product[] {
+  findLowStock(@Req() req): Promise<Product[]> {
     return this.productsService.findLowStock(req);
   }
 
   @Get('most-popular')
-  findMostPopular(@Req() req): Product[] {
+  findMostPopular(@Req() req): Promise<Product[]> {
     return this.productsService.findMostPopular(req);
   }
 

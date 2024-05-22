@@ -1,16 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger, Inject } from '@nestjs/common';
 import { Product } from './interfaces/product-interface';
 import { ProductsUtils } from './products.utils';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class ProductsService {
   private products: Product[];
   private readonly logger = new Logger(ProductsService.name);
 
-  constructor() {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
     this.loadProducts();
   }
 
@@ -28,9 +30,15 @@ export class ProductsService {
     fs.writeFileSync('products.json', JSON.stringify(this.products, null, 2));
   }
 
-  findAll(req): Product[] {
+  async findAll(req): Promise<Product[]> {
     this.logger.log(`Request ID: ${req.requestId} - Fetching all products`);
     const query = req.query;
+    const cacheKey = `products_${JSON.stringify(query)}`;
+    const cachedProducts = await this.tryGetFromCache(cacheKey, req);
+    if (cachedProducts)
+    {
+        return cachedProducts;
+    }
     let results = this.products;
 
     // Apply filters and sorting
@@ -46,6 +54,9 @@ export class ProductsService {
 
     // Apply pagination
     results = ProductsUtils.applyPagination(results,query.page, query.limit);
+    // cache
+    await this.cacheManager.set(cacheKey, results,  60000);
+    this.logger.log(`Request ID: ${req.requestId} - Products cached`, ProductsService.name);
 
     return results;
   }
@@ -144,5 +155,14 @@ export class ProductsService {
 
   private logError(req, error) {
     this.logger.error(`Request ID: ${req.requestId} - ${error}`);
+  }
+
+  private async tryGetFromCache(cacheKey, req) {
+    const cachedProducts = await this.cacheManager.get(cacheKey);
+    if (cachedProducts) {
+        this.logger.log(`Request ID: ${req.requestId} - Returning cached products`, ProductsService.name);
+        return cachedProducts as Product[];
+    }
+    return null;
   }
 }
