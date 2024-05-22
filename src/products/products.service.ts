@@ -18,9 +18,22 @@ export class ProductsService {
     }
 
     async findAll(req): Promise<Product[]> {
-        this.logger.log(`Request ID: ${req.requestId} - Fetching all products`);
+        return await this.processGetRequest(req, 'products', 'Fetching all products');
+    }
+
+
+    async findLowStock(req): Promise<Product[]> {
+        return await this.processGetRequest(req, 'products_low', `Fetching low stock products, threshold: ${req.query.threshold}`);
+    }
+
+    async findMostPopular(req): Promise<Product[]> {
+        return await this.processGetRequest(req, 'products_pop', `Fetching top ${req.query.top} most popular products`);
+    }
+
+    private async processGetRequest(req, cachePrefix, logMessage){
+        this.logger.log(`Request ID: ${req.requestId} - ${logMessage}`);
         const query = req.query;
-        const cacheKey = `products_${JSON.stringify(query)}`;
+        const cacheKey = `${cachePrefix}_${JSON.stringify(query)}`;
         const cachedProducts = await this.tryGetFromCache(cacheKey, req);
         if (cachedProducts) {
             return cachedProducts;
@@ -28,15 +41,7 @@ export class ProductsService {
         let results = this.products;
 
         // Apply filters and sorting
-        if (query.name) {
-            results = results.filter(product => product.name.includes(query.name));
-        }
-        if (query.description) {
-            results = results.filter(product => product.description.includes(query.description));
-        }
-        if (query.sortBy) {
-            ProductsUtils.sortBy(results, query.sortBy);
-        }
+       results = this.productsFilter(query);
 
         // Apply pagination
         results = ProductsUtils.applyPagination(results, query.page, query.limit);
@@ -47,42 +52,28 @@ export class ProductsService {
         return results;
     }
 
-
-    async findLowStock(req): Promise<Product[]> {
-        const query = req.query;
-        this.logger.log(`Request ID: ${req.requestId} - Fetching low stock products, threshold: ${query.threshold}`);
-        const cacheKey = `products_low_${JSON.stringify(query)}`;
-        const cachedProducts = await this.tryGetFromCache(cacheKey, req);
-        if (cachedProducts) {
-            return cachedProducts;
+    private productsFilter(query){
+        let results = this.products;
+        // Apply filters and sorting
+        if (query.name) {
+            results = results.filter(product => product.name.includes(query.name));
         }
-        const results = this.products.filter(product => product.quantity <= query.threshold).sort((a, b) => a.quantity - b.quantity);
-        // Apply pagination
-        const pagedProducts = ProductsUtils.applyPagination(results, query.page, query.limit);
-        // cache
-        await this.cacheManager.set(cacheKey, results, this.cacheTllDefault);
-        this.logger.log(`Request ID: ${req.requestId} - Products cached`, ProductsService.name);
-        return pagedProducts;
-    }
-
-    async findMostPopular(req): Promise<Product[]> {
-        const query = req.query;
-        this.logger.log(`Request ID: ${req.requestId} - Fetching top ${query.top} most popular products`);
-        const cacheKey = `products_pop_${JSON.stringify(query)}`;
-        const cachedProducts = await this.tryGetFromCache(cacheKey, req);
-        if (cachedProducts) {
-            return cachedProducts;
+        if (query.description) {
+            results = results.filter(product => product.description.includes(query.description));
         }
-        let returnArray = [...this.products].sort((a, b) => b.sold - a.sold);
-        if (query.top) {
-            returnArray = returnArray.slice(0, query.top);
+        if (query.sortBy) {
+            ProductsUtils.sortBy(results, query.sortBy);
         }
-        // Apply pagination
-        const pagedProducts = ProductsUtils.applyPagination(returnArray, query.page, query.limit);
-        // cache
-        await this.cacheManager.set(cacheKey, pagedProducts, this.cacheTllDefault);
-        this.logger.log(`Request ID: ${req.requestId} - Products cached`, ProductsService.name);
-        return pagedProducts;
+        if (query.threshold)
+        {
+            results = this.products.filter(product => product.quantity <= query.threshold).sort((a, b) => a.quantity - b.quantity);
+        }
+        if (query.top)
+        {
+             results = [...this.products].sort((a, b) => b.sold - a.sold);
+            results = results.slice(0, query.top);
+        }
+        return results;
     }
 
     create(req): Product {
